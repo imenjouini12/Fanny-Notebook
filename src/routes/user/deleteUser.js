@@ -1,54 +1,43 @@
-
 /**
  * @swagger
  * /users/{id}:
  *   delete:
- *     summary: Supprime un utilisateur par son identifiant.
- *     description: Utilisez cette API pour supprimer un utilisateur en spécifiant son identifiant.
+ *     summary: Supprimer un utilisateur par ID
+ *     description: Endpoint pour supprimer un utilisateur en fonction de son ID.
+ *     tags:
+ *       - Utilisateurs
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
+ *         description: ID de l'utilisateur à supprimer.
  *         required: true
- *         description: L'identifiant de l'utilisateur à supprimer.
- *         schema:
- *           type: integer
+ *         type: integer
  *     responses:
  *       200:
- *         description: Succès de la suppression de l'utilisateur.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Message indiquant que l'utilisateur a été supprimé avec succès.
- *       404:
- *         description: Aucun utilisateur trouvé avec l'identifiant spécifié.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Message indiquant qu'aucun utilisateur n'a été trouvé.
+ *         description: Succès - Utilisateur supprimé avec succès.
+ *         schema:
+ *           type: object
+ *           properties:
+ *             message:
+ *               type: string
+ *               description: Message de succès.
  *       500:
- *         description: Erreur interne du serveur lors de la suppression.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Message d'erreur interne du serveur.
+ *         description: Erreur serveur - Une erreur s'est produite lors de la suppression.
+ *         schema:
+ *           type: object
+ *           properties:
+ *             error:
+ *               type: string
+ *               description: Message d'erreur.
  */
 
 const { user } = require("../../db/connection");
+const auth = require("../../auth/auth");
 
 const deleteUser = (app) => {
-  app.delete("/users/:id", async (req, res) => {
+  app.delete("/users/:id", auth, async (req, res) => {
     const userId = req.params.id;
     try {
       const userDeleted = await user.destroy({

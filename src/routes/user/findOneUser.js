@@ -3,35 +3,47 @@
  * /users/{id}:
  *   get:
  *     summary: Récupérer un utilisateur par ID
- *     description: Récupérer un utilisateur en fournissant son ID.
+ *     description: Récupère les informations d'un utilisateur en fonction de son ID.
+ *     tags:
+ *       - Utilisateurs
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
- *         description: ID de l'utilisateur à récupérer
+ *         description: ID de l'utilisateur à récupérer.
  *         required: true
- *         schema:
- *           type: integer
+ *         type: integer
  *     responses:
  *       200:
- *         description: Opération réussie
+ *         description: Succès - Utilisateur récupéré avec succès.
  *         content:
  *           application/json:
  *             example:
- *               message: Un utilisateur a été trouvé.
+ *               message: Utilisateur récupéré avec succès.
  *               data:
  *                 id: 1
  *                 username: john_doe
+ *                 email: john_doe@example.com
  *       404:
- *         description: Utilisateur non trouvé
+ *         description: Non trouvé - Aucun utilisateur trouvé avec cet ID.
  *         content:
- *           text/plain:
- *             example: Aucun utilisateur existe avec cet ID.
+ *           application/json:
+ *             example:
+ *               message: Aucun utilisateur trouvé avec cet ID.
+ *       500:
+ *         description: Erreur serveur - Une erreur s'est produite lors de la récupération de l'utilisateur.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Erreur lors de la récupération de l'utilisateur.
+ *               details: (message d'erreur détaillé)
  */
 const { user } = require("../../db/connection");
-
+const auth = require("../../auth/auth");
 
 const oneUser = (app) => {
-  app.get("/users/:id", (req, res) => {
+  app.get("/users/:id", auth, (req, res) => {
     const userId = req.params.id;
     user
       .findByPk(userId)

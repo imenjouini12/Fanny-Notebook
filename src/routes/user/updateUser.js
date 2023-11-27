@@ -2,74 +2,62 @@
  * @swagger
  * /updateUser/{id}:
  *   put:
- *     summary: Met à jour un utilisateur.
- *     description: Utilisez cette API pour mettre à jour les informations d'un utilisateur existant.
+ *     summary: Mettre à jour un utilisateur par ID
+ *     description: Endpoint pour mettre à jour les informations d'un utilisateur en fonction de son ID.
+ *     tags:
+ *       - Utilisateurs
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
+ *         description: ID de l'utilisateur à mettre à jour.
  *         required: true
- *         description: L'identifiant de l'utilisateur à mettre à jour.
- *         schema:
- *           type: integer
- *     requestBody:
- *       description: Les données à mettre à jour pour l'utilisateur.
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UserUpdateInput'
+ *         type: integer
+ *       - in: body
+ *         name: user
+ *         description: Nouvelles informations de l'utilisateur.
+ *         required: true
+ *         content:
+ *           application/json:
+ *             example:
+ *               username: nouveau_nom
+ *               email: nouveau_email@example.com
+ *               password: nouveau_mot_de_passe
  *     responses:
  *       200:
- *         description: Succès de la mise à jour de l'utilisateur.
+ *         description: Succès - Utilisateur mis à jour avec succès.
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Message indiquant le succès de la mise à jour.
- *                 data:
- *                   type: object
- *                   properties:
- *                     nombreDeModification:
- *                       type: integer
- *                       description: Nombre de modifications effectuées.
+ *             example:
+ *               message: Utilisateur mis à jour avec succès.
+ *               data:
+ *                 nombreDeModification: 1
  *       400:
- *         description: Échec de la mise à jour en raison de données incorrectes.
+ *         description: Erreur de requête - Aucune mise à jour effectuée. Vérifiez les données fournies.
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Message indiquant l'échec de la mise à jour.
+ *             example:
+ *               error: Aucune mise à jour effectuée. Vérifiez les données fournies.
  *       404:
- *         description: Utilisateur non trouvé avec l'identifiant spécifié.
+ *         description: Non trouvé - Aucun utilisateur trouvé avec cet ID.
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Message indiquant que l'utilisateur n'a pas été trouvé.
+ *             example:
+ *               error: Aucun utilisateur trouvé avec cet ID.
  *       500:
- *         description: Erreur interne du serveur lors de la mise à jour.
+ *         description: Erreur serveur - Une erreur s'est produite lors de la mise à jour.
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Message d'erreur interne du serveur.
+ *             example:
+ *               error: Erreur lors de la mise à jour de l'utilisateur.
+ *               details: (message d'erreur détaillé)
  */
 const { user } = require("../../db/connection");
+const auth = require("../../auth/auth");
 
 const updateUser = (app) => {
-  app.put("/updatUser/:id", async (req, res) => {
+  app.put("/updatUser/:id", auth, async (req, res) => {
     const userId = req.params.id;
 
     try {
