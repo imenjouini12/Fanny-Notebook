@@ -47,12 +47,12 @@ const bcrypt = require("bcrypt");
 const auth = require("../../auth/auth");
 
 const addUser = (app) => {
-  app.post("/createuser", auth, async (req, res) => {
-    const { username, email, password } = req.body;
+  app.post("/createuser", async (req, res) => {
+    const { username, email, password , role} = req.body;
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !role) {
       return res.status(400).json({
-        error: "Les champs username, email et password sont obligatoires.",
+        error: "Les champs username, email et password et role sont obligatoires.",
       });
     }
 
@@ -72,6 +72,7 @@ const addUser = (app) => {
         username: username,
         email: email,
         password: hashedPassword,
+        role:role
       });
 
       const message = `L'utilisateur ${username} a été créé avec succès.`;

@@ -1,5 +1,6 @@
 const Tascks = require("./tasck");
 
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define("User", {
     username: {
@@ -17,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    role: {
+     
+      type: DataTypes.ENUM("Utilisateur", "Administrateur"),
+      defaultValue: 'Utilisateur', // Par défaut, l'utilisateur a le rôle 'utilisateur'
+    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,
@@ -28,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   // Association avec Task
-  User.hasMany(Tascks(sequelize, DataTypes));
+  //User.hasMany(Tascks(sequelize, DataTypes));
+
   return User;
 };

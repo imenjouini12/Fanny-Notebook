@@ -8,7 +8,9 @@ const sequelize = new Sequelize("tascks", "root", "", {
   dialect: "mariadb",
 });
 
-const tascks = Tascks(sequelize, DataTypes);
-const user = User(sequelize, DataTypes);
 
-module.exports = { sequelize, user };
+const user = User(sequelize, DataTypes);
+const tascks = Tascks(sequelize, DataTypes);
+
+
+module.exports = { sequelize, user , tascks };
